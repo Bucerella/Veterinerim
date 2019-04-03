@@ -10,7 +10,6 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
   VideoPlayerController playerController;
-  VideoPlayerController playerController2;
   VoidCallback listener;
 
   var status = false;
@@ -22,31 +21,22 @@ class _LoginPageState extends State<LoginPage> {
     // TODO: implement initState
     super.initState();
     listener = () {
-      print(playerController.value.position);
       Duration duration2 = Duration(seconds: 14);
       Duration duration = Duration(seconds: 0);
       if (password == true) {
-        print("SW");
-
         playerController.seekTo(duration2);
         password = false;
-
-        //  playerController.play();
-
+      } else if (playerController.value.position >= Duration(seconds: 9) &&
+          playerController.value.position < Duration(seconds: 14)) {
+        playerController.seekTo(Duration(seconds: 6));
       }
-      else if (playerController.value.position >= Duration(seconds: 9) && playerController.value.position < Duration(seconds: 14)) {
-        print("$password ++");
-        playerController.seekTo(Duration(seconds: 6) );
-
-      }
-       if (playerController.value.position > Duration(seconds: 16)) {
+      if (playerController.value.position > Duration(seconds: 16)) {
         playerController.seekTo(Duration(seconds: 15));
       }
       if (textField == true) {
         playerController.seekTo(duration);
         textField = false;
       }
-
       setState(() {});
     };
     createVideo("yeti.mov");
@@ -57,49 +47,37 @@ class _LoginPageState extends State<LoginPage> {
       playerController = VideoPlayerController.asset("images/$path");
       playerController.addListener(listener);
       playerController.initialize();
-      //playerController.play();
     } else {
       if (playerController.value.isPlaying) {
         playerController.pause();
       } else {
         playerController.initialize();
-        //playerController.play();
-      }
-    }
-  }
-
-  void createVideo2(path) {
-    if (playerController2 == null) {
-      playerController2 = VideoPlayerController.asset("images/$path");
-      playerController2.addListener(listener);
-      playerController2.initialize();
-      playerController2.play();
-    } else {
-      if (playerController2.value.isPlaying) {
-        playerController2.pause();
-      } else {
-        playerController2.initialize();
-        playerController2.play();
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
-          "VETERİNERİM",
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
+        title: Center(
+          child: Text(
+            "VETERİNERİM",
+            style: TextStyle(
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(
+              height: 20,
+            ),
             status == true
                 ? Container(
                     width: 150,
@@ -115,52 +93,123 @@ class _LoginPageState extends State<LoginPage> {
                     width: 150,
                     height: 150,
                   ),
-            Text(
-              "E-Mail",
-              style: TextStyle(
-                fontSize: 23,
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
+            SizedBox(
+              height: 30,
+            ),
+            Container(
+              alignment: Alignment.topLeft,
+              padding: EdgeInsets.only(left: 38),
+              child: Text(
+                "E-Mail",
+                style: TextStyle(
+                  fontSize: 23,
+                  color: Color(0xff286f8e),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            TextField(
-              controller: _usernameController,
-              onChanged: (value) {},
-              onTap: () {
-                status = true;
+            SizedBox(height: 10,),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xff286f8e), width: 3),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              width: size.width - 75,
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "E-mail adresinizi giriniz...",
+                  icon: Icon(Icons.email),
+                ),
+                onChanged: (value) {},
+                onTap: () {
+                  status = true;
 
-                playerController.play();
-                textField = true;
-              },
-              textAlign: TextAlign.start,
+                  playerController.play();
+                  textField = true;
+                },
+                textAlign: TextAlign.start,
+              ),
             ),
-            Text(
-              "Password",
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 38),
+              alignment: Alignment.topLeft,
+              child: Text(
+                "Password",
+                style: TextStyle(
+                  fontSize: 23,
+                  color: Color(0xff286f8e),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            SizedBox(height: 10,),
+
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xff286f8e), width: 3),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              width: size.width - 75,
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                decoration: InputDecoration(
+                  icon: Icon(Icons.face),
+                  border: InputBorder.none,
+                  hintText: "Şifrenizi adresinizi giriniz...",
+                ),
+                controller: _passwordController,
+                obscureText: true,
+                onTap: () {
+                  password = true;
+                },
+                onChanged: (value) {},
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              width: size.width - 120,
+              height: 50,
+              child: FlatButton(
+                child: Text("Giriş Yap",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+                ),
+                color: Color(0xff286f8e),
+                onPressed: () {},
+              ),
+            ),
+            FlatButton(
+              child: Text("Kayıt Ol",
               style: TextStyle(
-                fontSize: 23,
+                fontSize: 18,
                 color: Colors.blueAccent,
                 fontWeight: FontWeight.bold,
               ),
-            ),
-            TextField(
-              controller: _passwordController,
-              obscureText: true,
-              onTap: () {
-                // playerController.dispose();
-                password = true;
+              ),
+
+              onPressed: () {
+                
               },
-              onChanged: (value) {},
-              textAlign: TextAlign.start,
-            ),
-            FlatButton(
-              child: Text("Giriş Yap"),
-              color: Colors.teal,
-              onPressed: () {},
-            ),
-            FlatButton(
-              child: Text("Kaydol"),
-              color: Colors.teal,
-              onPressed: () {},
             ),
           ],
         ),
@@ -168,4 +217,3 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
