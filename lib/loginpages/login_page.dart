@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/loginpages/sign_up.dart';
 import 'package:video_player/video_player.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
-
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
@@ -208,7 +208,9 @@ class _LoginPageState extends State<LoginPage> {
               ),
 
               onPressed: () {
-                
+                print("deneme");
+                var route = MaterialPageRoute(builder: (context) => SignUp());
+                Navigator.push(context, route);
               },
             ),
           ],

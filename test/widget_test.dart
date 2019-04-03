@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:veterinerim/login_page.dart';
+import 'package:veterinerim/loginpages/login_page.dart';
 
 import 'package:veterinerim/main.dart';
 
