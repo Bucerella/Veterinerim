@@ -76,6 +76,12 @@ flutter:
         - asset: fonts/Poppins-Regular.ttf
         - asset: fonts/Poppins-Medium.ttf
         - asset: fonts/Poppins-Black.ttf
+    - family: Robot
+      fonts:
+        - asset: fonts/RobotoSlab-Regular.ttf
+        - asset: fonts/RobotoSlab-Bold.ttf
+        - asset: fonts/RobotoSlab-Light.ttf
+        - asset: fonts/RobotoSlab-Thin.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:
