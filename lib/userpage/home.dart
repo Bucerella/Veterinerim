@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:veterinerim/userpage/animals.dart';
+import 'package:veterinerim/userpage/appointment.dart';
 import 'package:veterinerim/userpage/question.dart';
 
 class UserPage extends StatefulWidget {
@@ -254,32 +255,38 @@ Widget menuCard(context) {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Container(
-                    padding: EdgeInsets.all(20),
-                    alignment: Alignment.topRight,
-                    child: Image.asset(
-                      "images/randevu.png",
-                      height: 75,
-                    )),
-                Container(
-                    alignment: Alignment.center,
+            child: InkWell(
+              onTap: (){
+                var route = MaterialPageRoute(builder: (context)=> DatePicker());
+                Navigator.push(context, route);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                      padding: EdgeInsets.all(20),
+                      alignment: Alignment.topRight,
+                      child: Image.asset(
+                        "images/randevu.png",
+                        height: 75,
+                      )),
+                  Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        "Randevu Al",
+                        style: TextStyle(
+                            color: Colors.white, fontFamily: "Pop", fontSize: 25),
+                      )),
+                  Padding(
+                    padding: EdgeInsets.all(10),
                     child: Text(
-                      "Randevu Al",
+                      "Buradan veterinerinizden uygun tarih ve saatlerde randevu alabilirsiniz.",
                       style: TextStyle(
-                          color: Colors.white, fontFamily: "Pop", fontSize: 25),
-                    )),
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    "Buradan veterinerinizden uygun tarih ve saatlerde randevu alabilirsiniz.",
-                    style: TextStyle(
-                        color: Colors.white, fontFamily: "Pop", fontSize: 16),
+                          color: Colors.white, fontFamily: "Pop", fontSize: 16),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

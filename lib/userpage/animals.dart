@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:veterinerim/userpage/animals_add.dart';
+import 'package:veterinerim/userpage/animals_detail_edit.dart';
 
 class Animals extends StatefulWidget {
   @override
@@ -25,15 +26,15 @@ class _AnimalsState extends State<Animals> {
         child: ListView(
           children: <Widget>[
             animalsCard(
-                size, "images/dog_icon.png", "Saturu", "Bahar alerjisi"),
+                size, "images/dog_icon.png", "Saturu", "Bahar alerjisi",context),
             animalsCard(
-                size, "images/cat_icon.png", "Saturu", "Bahar alerjisi"),
+                size, "images/cat_icon.png", "Saturu", "Bahar alerjisi",context),
             animalsCard(
-                size, "images/turtle_icon.png", "Saturu", "Bahar alerjisi"),
+                size, "images/turtle_icon.png", "Saturu", "Bahar alerjisi",context),
             animalsCard(
-                size, "images/hamster_icon.png", "Saturu", "Bahar alerjisi"),
+                size, "images/hamster_icon.png", "Saturu", "Bahar alerjisi",context),
             animalsCard(
-                size, "images/bird_icon.png", "Saturu", "Bahar alerjisi"),
+                size, "images/bird_icon.png", "Saturu", "Bahar alerjisi",context),
           ],
         ),
       ),
@@ -48,33 +49,39 @@ class _AnimalsState extends State<Animals> {
   }
 }
 
-Widget animalsCard(Size size, icon, title, subtitle) {
-  return Card(
-    child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        width: size.width - 30,
-        child: ListTile(
-          leading: Image.asset(
-            "$icon",
-            scale: 2,
-          ),
-          title: Text("$title",
-          style: TextStyle(
-            fontSize: 19,
-            fontFamily: "Pop",
-            fontWeight: FontWeight.bold,
-          ),
-          ),
-          subtitle: Text("$subtitle",
-          style: TextStyle(
-            fontFamily: "Pop",
-            fontWeight: FontWeight.w300,
-          ),
+Widget animalsCard(Size size, icon, title, subtitle,context) {
+  return InkWell(
+    onTap: (){
+      var route = MaterialPageRoute(builder: (context) => AnimalsEdit());
+      Navigator.push(context, route);
+    },
+    child: Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: size.width - 30,
+          child: ListTile(
+            leading: Image.asset(
+              "$icon",
+              scale: 2,
+            ),
+            title: Text("$title",
+            style: TextStyle(
+              fontSize: 19,
+              fontFamily: "Pop",
+              fontWeight: FontWeight.bold,
+            ),
+            ),
+            subtitle: Text("$subtitle",
+            style: TextStyle(
+              fontFamily: "Pop",
+              fontWeight: FontWeight.w300,
+            ),
+            ),
           ),
         ),
       ),
+      elevation: 3,
     ),
-    elevation: 3,
   );
 }
