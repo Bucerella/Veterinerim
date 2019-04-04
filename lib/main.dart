@@ -5,6 +5,6 @@ import 'package:veterinerim/userpage/animals_add.dart';
 import 'package:veterinerim/userpage/home.dart';
 
 void main() => runApp(MaterialApp(
-  home: Animals(),
+  home: UserPage(),
 ));
 
