@@ -1,15 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar/flutter_calendar.dart';
 
-class VaccineAdd extends StatefulWidget {
+class VaccineEdit extends StatefulWidget {
   @override
-  _VaccineAddState createState() => _VaccineAddState();
+  _VaccineEditState createState() => _VaccineEditState();
 }
 
-class _VaccineAddState extends State<VaccineAdd> {
+class _VaccineEditState extends State<VaccineEdit> {
   void handleNewDate(date) {
     print("handleNewDate ${date}");
   }
+
+  TextEditingController _textEditingController = new TextEditingController();
+  TextEditingController _textEditingController2 = new TextEditingController();
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  _textEditingController.text = "KUDUZ";
+  _textEditingController2.text = "anan vurdu";
+}
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +79,7 @@ class _VaccineAddState extends State<VaccineAdd> {
                       alignment: Alignment.centerLeft,
                       height: 75,
                       child: TextField(
+                        controller: _textEditingController,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -108,6 +120,7 @@ class _VaccineAddState extends State<VaccineAdd> {
                       alignment: Alignment.centerLeft,
                       height: 75,
                       child: TextField(
+                        controller: _textEditingController2,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,

@@ -9,6 +9,8 @@ class _SignUpState extends State<SignUp> {
 
   final TextEditingController _usernameController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _phoneController = new TextEditingController();
   VideoPlayerController playerController;
   VoidCallback listener;
 
@@ -124,6 +126,64 @@ class _SignUpState extends State<SignUp> {
                   fontWeight: FontWeight.w600,
                 ),
                 controller: _usernameController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Adınızı Soyadınızı giriniz...",
+                  icon: Icon(Icons.email),
+                ),
+                onChanged: (value) {},
+                onTap: () {
+                  status = true;
+
+                  playerController.play();
+                  textField = true;
+                },
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: 10,),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xff286f8e), width: 3),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              width: size.width - 75,
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                controller: _phoneController,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "Telefon numaranızı giriniz...",
+                  icon: Icon(Icons.email),
+                ),
+                onChanged: (value) {},
+                onTap: () {
+                  status = true;
+
+                  playerController.play();
+                  textField = true;
+                },
+                textAlign: TextAlign.start,
+              ),
+            ),
+            SizedBox(height: 10,),
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Color(0xff286f8e), width: 3),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              width: size.width - 75,
+              child: TextField(
+                style: TextStyle(
+                  color: Colors.blueAccent,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                controller: _emailController,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: "E-mail adresinizi giriniz...",

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:veterinerim/veterinarypage/vaccine_add.dart';
+import 'package:veterinerim/veterinarypage/vaccine_edit.dart';
 
 /*
 class UserAnimalsDetail extends StatefulWidget {
@@ -483,7 +484,13 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        Icon(Icons.build),
+                        InkWell(
+                            onTap: (){
+                              var route = MaterialPageRoute(builder: (context) => VaccineEdit());
+                              Navigator.push(context, route);
+                            },
+                            child:
+                            Icon(Icons.build)),
                       ],
                     ),
                   ),
@@ -492,7 +499,8 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
                           "01/03/2014",
@@ -502,7 +510,6 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-
                         Text(
                           "2 Yaş",
                           style: TextStyle(
@@ -511,7 +518,13 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                             fontWeight: FontWeight.w400,
                           ),
                         ),
-                        Icon(Icons.build),
+                        InkWell(
+                          onTap: (){
+                            var route = MaterialPageRoute(builder: (context) => VaccineEdit());
+                            Navigator.push(context, route);
+                          },
+                            child:
+                            Icon(Icons.build)),
                       ],
                     ),
                   ),
