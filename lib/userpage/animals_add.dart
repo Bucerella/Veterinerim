@@ -6,7 +6,8 @@ class AnimalsAdd extends StatefulWidget {
 }
 
 class _AnimalsAddState extends State<AnimalsAdd> {
-  var selected = 0;
+  var type = 0;
+  var gender = 5;
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +47,22 @@ class _AnimalsAddState extends State<AnimalsAdd> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  animalsIcon("cat_icon", "Kedi", 0),
-                  animalsIcon("bird_icon", "Kuş", 1),
-                  animalsIcon("dog_icon", "Köpek", 2),
-                  animalsIcon("turtle_icon", "Kaplumbağa", 3),
-                  animalsIcon("hamster_icon", "Hamster", 4),
+                  animalsIcon("cat_icon", "Kedi", 0,type),
+                  animalsIcon("bird_icon", "Kuş", 1,type),
+                  animalsIcon("dog_icon", "Köpek", 2,type),
+                  animalsIcon("turtle_icon", "Kaplumbağa", 3,type),
+                  animalsIcon("hamster_icon", "Hamster", 4,type),
                 ],
               ),
-              SizedBox(
-                height: 15,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+                children: <Widget>[
+                  animalsIcon("dog_icon", "Erkek", 5,gender),
+                  animalsIcon("dog_icon", "Kadın", 6,gender),
+                ],
               ),
+              SizedBox(height: 15,),
               animalsTextWidget(size, "Hayvanınızın isimini giriniz.", "images/paw.png", ""),
               SizedBox(
                 height: 15,
@@ -66,6 +73,15 @@ class _AnimalsAddState extends State<AnimalsAdd> {
                 height: 15,
               ),
               animalsTextWidget(size, "Hayvanınızın kilosunu giriniz", "images/weight_2.png", ""),
+              SizedBox(
+                height: 15,
+              ),
+              animalsTextWidget(
+                  size, "Hayvanınızın yaşını giriniz.", "images/pills_5.png", ""),
+              SizedBox(
+                height: 15,
+              ),
+
               SizedBox(
                 height: 25,
               ),
@@ -94,7 +110,7 @@ class _AnimalsAddState extends State<AnimalsAdd> {
     );
   }
 
-  Widget animalsIcon(path, type, id) {
+  Widget animalsIcon(path, type, id,selected) {
     return Column(
       children: <Widget>[
         Padding(
@@ -102,7 +118,14 @@ class _AnimalsAddState extends State<AnimalsAdd> {
           child: InkWell(
             borderRadius: BorderRadius.circular(99),
             onTap: () {
-              selected = id;
+
+              if(id>4){
+                gender = id;
+              }
+              else{
+                this.type = id;
+              }
+
               setState(() {});
             },
             child: Opacity(

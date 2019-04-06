@@ -10,7 +10,10 @@ class _AnimalsEditState extends State<AnimalsEdit> {
   TextEditingController _textEditingController = new TextEditingController();
   TextEditingController _textEditingController2 = new TextEditingController();
   TextEditingController _textEditingController3 = new TextEditingController();
-  var selected = 0;
+  TextEditingController _textEditingController4 = new TextEditingController();
+  var type = 0;
+  var gender = 5;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -18,6 +21,7 @@ class _AnimalsEditState extends State<AnimalsEdit> {
     _textEditingController.text = "Saturu";
     _textEditingController2.text = "Saturuku alerjisi vardır.";
     _textEditingController3.text = "99.9";
+    _textEditingController4.text = "5Yaşında";
   }
   @override
   Widget build(BuildContext context) {
@@ -57,11 +61,18 @@ class _AnimalsEditState extends State<AnimalsEdit> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  animalsIcon("cat_icon", "Kedi", 0),
-                  animalsIcon("bird_icon", "Kuş", 1),
-                  animalsIcon("dog_icon", "Köpek", 2),
-                  animalsIcon("turtle_icon", "Kaplumbağa", 3),
-                  animalsIcon("hamster_icon", "Hamster", 4),
+                  animalsIcon("cat_icon", "Kedi", 0,type),
+                  animalsIcon("bird_icon", "Kuş", 1,type),
+                  animalsIcon("dog_icon", "Köpek", 2,type),
+                  animalsIcon("turtle_icon", "Kaplumbağa", 3,type),
+                  animalsIcon("hamster_icon", "Hamster", 4,type),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  animalsIcon("cat_icon", "Erkek", 5,gender),
+                  animalsIcon("cat_icon", "Kadın", 6,gender)
                 ],
               ),
               SizedBox(
@@ -79,6 +90,11 @@ class _AnimalsEditState extends State<AnimalsEdit> {
               ),
               animalsTextWidget(size, "Hayvanınızın kilosunu giriniz",
                   "images/weight_2.png", _textEditingController3),
+              SizedBox(
+                height: 15,
+              ),
+              animalsTextWidget(size, "Hayvanınızın yaşını giriniz",
+                  "images/weight_2.png", _textEditingController4),
               SizedBox(
                 height: 25,
               ),
@@ -107,30 +123,22 @@ class _AnimalsEditState extends State<AnimalsEdit> {
       ),
     );
   }
-
-  Widget animalsIcon(path, type, id) {
+  Widget animalsIcon(path, type, id,selected) {
     return Column(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.only(left: 10, top: 30.0),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(99),
-            onTap: () {
-              selected = id;
-              setState(() {});
-            },
-            child: Opacity(
-              opacity: selected == id ? 0.5 : 1,
-              child: Container(
-                child: Image.asset("images/$path.png"),
-                padding: EdgeInsets.all(2),
-                width: 65,
-                height: 65,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(99),
-                    border: Border.all(color: Color(0xff21cdc0), width: 2)),
-              ),
+          child: Opacity(
+            opacity: selected == id ? 0.5 : 1,
+            child: Container(
+              child: Image.asset("images/$path.png"),
+              padding: EdgeInsets.all(2),
+              width: 65,
+              height: 65,
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(99),
+                  border: Border.all(color: Color(0xff21cdc0), width: 2)),
             ),
           ),
         ),
@@ -147,6 +155,7 @@ class _AnimalsEditState extends State<AnimalsEdit> {
       ],
     );
   }
+
 
   Widget animalsTextWidget(Size size, icerik, icon, editController) {
     return Padding(
