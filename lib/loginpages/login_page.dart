@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
 import 'package:veterinerim/loginpages/sign_up.dart';
+import 'package:veterinerim/model/user.dart';
+import 'package:veterinerim/userpage/home.dart';
+import 'package:veterinerim/veterinarypage/vet_home.dart';
 import 'package:video_player/video_player.dart';
+import 'package:async/async.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -61,161 +66,190 @@ class _LoginPageState extends State<LoginPage> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "VETERİNERİM",
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 20,
-            ),
-            status == true
-                ? Container(
-                    width: 150,
-                    height: 150,
-                    child: (playerController != null
-                        ? VideoPlayer(
-                            playerController,
-                          )
-                        : Container()),
-                  )
-                : Image.asset(
-                    "images/yetiphoto.png",
-                    width: 150,
-                    height: 150,
+
+      body: Builder(builder: (context){
+        return SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
+              status == true
+                  ? Container(
+                width: 150,
+                height: 150,
+                child: (playerController != null
+                    ? VideoPlayer(
+                  playerController,
+                )
+                    : Container()),
+              )
+                  : Image.asset(
+                "images/yetiphoto.png",
+                width: 150,
+                height: 150,
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Container(
+                alignment: Alignment.topLeft,
+                padding: EdgeInsets.only(left: 38),
+                child: Text(
+                  "E-Mail",
+                  style: TextStyle(
+                    fontSize: 23,
+                    color: Color(0xff286f8e),
+                    fontWeight: FontWeight.bold,
                   ),
-            SizedBox(
-              height: 30,
-            ),
-            Container(
-              alignment: Alignment.topLeft,
-              padding: EdgeInsets.only(left: 38),
-              child: Text(
-                "E-Mail",
-                style: TextStyle(
-                  fontSize: 23,
+                ),
+              ),
+              SizedBox(height: 10,),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xff286f8e), width: 3),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                width: size.width - 75,
+                child: TextField(
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  controller: _usernameController,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: "E-mail adresinizi giriniz...",
+                    icon: Icon(Icons.email),
+                  ),
+                  onChanged: (value) {},
+                  onTap: () {
+                    status = true;
+
+                    playerController.play();
+                    textField = true;
+                  },
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                padding: EdgeInsets.only(left: 38),
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Password",
+                  style: TextStyle(
+                    fontSize: 23,
+                    color: Color(0xff286f8e),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              SizedBox(height: 10,),
+
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Color(0xff286f8e), width: 3),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                width: size.width - 75,
+                child: TextField(
+                  style: TextStyle(
+                    color: Colors.blueAccent,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.face),
+                    border: InputBorder.none,
+                    hintText: "Şifrenizi adresinizi giriniz...",
+                  ),
+                  controller: _passwordController,
+                  obscureText: true,
+                  onTap: () {
+                    password = true;
+                  },
+                  onChanged: (value) {},
+                  textAlign: TextAlign.start,
+                ),
+              ),
+
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: size.width - 120,
+                height: 50,
+                child: FlatButton(
+                  child: Text("Giriş Yap",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   color: Color(0xff286f8e),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 10,),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xff286f8e), width: 3),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              width: size.width - 75,
-              child: TextField(
-                style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-                controller: _usernameController,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "E-mail adresinizi giriniz...",
-                  icon: Icon(Icons.email),
-                ),
-                onChanged: (value) {},
-                onTap: () {
-                  status = true;
+                  onPressed: () async {
+                    User user = User();
+                    user.posta = _usernameController.text;
+                    user.sifre = _passwordController.text;
+                    var text = "Giriş olunuyor";
+                    SnackBar sn = new SnackBar(content: new Row(children: <Widget>[new CircularProgressIndicator(), new Text(text),],));
+                    Scaffold.of(context).showSnackBar(sn);
+                    String sonuc = await sendLogin(user);
+                    if(sonuc == "-1"){
+                      print("Kayıtlı Değil/Hatalı E-posta");
 
-                  playerController.play();
-                  textField = true;
+                    }else if(sonuc == "0"){
+
+                      print("Şifreniz hatalı");
+                      SnackBar sn = new SnackBar(content: new Row(children: <Widget>[new CircularProgressIndicator(), new Text("Hatlaı şifre"),],));
+                      Scaffold.of(context).showSnackBar(sn);
+                    }else{
+                        var sonuc2 = sonuc.split("-");
+                        int id = int.parse(sonuc2[1]);
+                        if(sonuc2[0] == "1"){
+                          var list = await getUserInfo(id);
+                          var route = MaterialPageRoute(builder: (context)=>UserPage(id,list));
+                          Navigator.push(context, route);
+                        }
+                        else{
+                          var list = await getUserInfo(id);
+                         var route = MaterialPageRoute(builder: (context)=>VetHome(id,list));
+                          Navigator.push(context, route);
+                        }
+                    }
+                  },
+                ),
+              ),
+              FlatButton(
+                child: Text("Kayıt Ol",
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.blueAccent,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                onPressed: () {
+                  print("deneme");
+                  var route = MaterialPageRoute(builder: (context) => SignUp());
+                  Navigator.push(context, route);
                 },
-                textAlign: TextAlign.start,
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              padding: EdgeInsets.only(left: 38),
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Password",
-                style: TextStyle(
-                  fontSize: 23,
-                  color: Color(0xff286f8e),
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            SizedBox(height: 10,),
-
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Color(0xff286f8e), width: 3),
-                borderRadius: BorderRadius.circular(5),
-              ),
-              width: size.width - 75,
-              child: TextField(
-                style: TextStyle(
-                  color: Colors.blueAccent,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                ),
-                decoration: InputDecoration(
-                  icon: Icon(Icons.face),
-                  border: InputBorder.none,
-                  hintText: "Şifrenizi adresinizi giriniz...",
-                ),
-                controller: _passwordController,
-                obscureText: true,
-                onTap: () {
-                  password = true;
-                },
-                onChanged: (value) {},
-                textAlign: TextAlign.start,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: size.width - 120,
-              height: 50,
-              child: FlatButton(
-                child: Text("Giriş Yap",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-                ),
-                color: Color(0xff286f8e),
-                onPressed: () {},
-              ),
-            ),
-            FlatButton(
-              child: Text("Kayıt Ol",
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
-              ),
-              ),
-
-              onPressed: () {
-                print("deneme");
-                var route = MaterialPageRoute(builder: (context) => SignUp());
-                Navigator.push(context, route);
-              },
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    playerController.dispose();
   }
 }

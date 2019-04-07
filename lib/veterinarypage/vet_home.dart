@@ -4,6 +4,12 @@ import 'package:veterinerim/veterinarypage/vet_appointment.dart';
 import 'package:veterinerim/veterinarypage/vet_question.dart';
 
 class VetHome extends StatefulWidget {
+  final int id;
+  final Map map;
+
+
+  VetHome(this.id, this.map);
+
   @override
   _VetHomeState createState() => _VetHomeState();
 }
@@ -26,7 +32,7 @@ class _VetHomeState extends State<VetHome> {
             Container(
               width: size.width,
               height: 100,
-              child: userPanel(),
+              child: userPanel(widget.map),
             ),
             Container(
               width: size.width - 20,
@@ -48,7 +54,7 @@ class _VetHomeState extends State<VetHome> {
   }
 }
 
-Widget userPanel() {
+Widget userPanel(map) {
   return Row(
     children: <Widget>[
       SizedBox(
@@ -66,7 +72,7 @@ Widget userPanel() {
         width: 35,
       ),
       Text(
-        "Merhaba Veteriner",
+        "Merhaba ${map["ad"]}",
         style: TextStyle(
           fontSize: 25,
           fontWeight: FontWeight.bold,
@@ -163,7 +169,7 @@ Widget menuCard(context) {
                       padding: EdgeInsets.all(10),
                       alignment: Alignment.topRight,
                       child: Image.asset(
-                        "images/dogcat.png",
+                        "images/user_4.png",
                         height: 75,
                       )),
                   Container(

@@ -1,16 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
 import 'package:veterinerim/userpage/animals.dart';
 import 'package:veterinerim/userpage/appointment.dart';
 import 'package:veterinerim/userpage/question.dart';
 
 class UserPage extends StatefulWidget {
+  final int id;
+  final Map list;
+
+  UserPage(this.id, this.list);
+
   @override
   _UserPageState createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print(widget.list);
     var build = context;
     var size = MediaQuery.of(context).size;
     return Scaffold(
@@ -18,37 +31,82 @@ class _UserPageState extends State<UserPage> {
       body: Container(
         width: size.width,
         height: size.height,
-        child: Column(
-          children: <Widget>[
-            SizedBox(
-              height: 49,
-            ),
-            Container(
-              width: size.width,
-              height: 100,
-              child: userPanel(),
-            ),
-            Container(
-              width: size.width - 20,
-              height: size.height / 3,
-              child: eventReminders(),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Container(
-              width: size.width,
-              height: size.height / 3 * 2 - 170,
-              child: menuCard(build),
-            )
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 49,
+              ),
+              Container(
+                width: size.width,
+                height: 100,
+                child: userPanel(widget.list),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              widget.list["status"] == 0
+                  ? Material(
+                      elevation: 4,
+                      borderRadius: BorderRadius.circular(15),
+                      child: Container(
+                          padding: EdgeInsets.all(10.0),
+                          height: 80,
+                          width: size.width - 20,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Text(
+                                "Veterinere kaydolmak için kodunuz:",
+                                style: TextStyle(
+                                  color: Color(0xff21cdc0),
+                                  fontFamily: "Pop",
+                                  fontSize: 19,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "${widget.list["code"]}",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Pop",
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )),
+                    )
+                  : SizedBox(),
+              SizedBox(
+                height: 15,
+              ),
+              Container(
+                width: size.width - 20,
+                height: size.height / 3,
+                child: eventReminders(),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: size.width,
+                height: size.height / 3 * 2 - 170,
+                child: menuCard(build, widget.list),
+              )
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-Widget userPanel() {
+Widget userPanel(list) {
   return Row(
     children: <Widget>[
       SizedBox(
@@ -66,9 +124,9 @@ Widget userPanel() {
         width: 35,
       ),
       Text(
-        "Merhaba Bucerella",
+        "Merhaba ${list["ad"]}",
         style: TextStyle(
-          fontSize: 25,
+          fontSize: 18,
           fontWeight: FontWeight.bold,
           fontFamily: "Pop",
         ),
@@ -134,7 +192,7 @@ Widget eventReminders() {
   );
 }
 
-Widget menuCard(context) {
+Widget menuCard(context, list) {
   return ListView(
     scrollDirection: Axis.horizontal,
     children: <Widget>[
@@ -145,57 +203,57 @@ Widget menuCard(context) {
           color: Color(0xff21cdc0),
           borderRadius: BorderRadius.circular(10),
           child: Container(
-            alignment: Alignment.topRight,
-            width: 225,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: InkWell(
-              onTap: (){
-                var route = MaterialPageRoute(builder: (context) => Animals());
-                Navigator.push(context, route);
-              },
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                      padding: EdgeInsets.all(20),
-                      alignment: Alignment.topRight,
-                      child: Image.asset(
-                        "images/dogcat.png",
-                        height: 75,
-                      )),
-                  Container(
-                      alignment: Alignment.center,
+              alignment: Alignment.topRight,
+              width: 225,
+              height: 200,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: InkWell(
+                onTap: () {
+                  var route =
+                      MaterialPageRoute(builder: (context) => Animals());
+                  Navigator.push(context, route);
+                },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Container(
+                        padding: EdgeInsets.all(20),
+                        alignment: Alignment.topRight,
+                        child: Image.asset(
+                          "images/dogcat.png",
+                          height: 75,
+                        )),
+                    Container(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Hayvanlarım",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontFamily: "Serrat",
+                              fontSize: 25),
+                        )),
+                    Padding(
+                      padding: EdgeInsets.all(10),
                       child: Text(
-                        "Hayvanlarım",
+                        "Buradan hayvanlarınızı ekleyip , aşılarını görebilirsiniz.",
                         style: TextStyle(
                             color: Colors.white,
                             fontFamily: "Serrat",
-                            fontSize: 25),
-                      )),
-                  Padding(
-                    padding: EdgeInsets.all(10),
-                    child: Text(
-                      "Buradan hayvanlarınızı ekleyip , aşılarını görebilirsiniz.",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontFamily: "Serrat",
-                          fontSize: 18),
+                            fontSize: 18),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
+                  ],
+                ),
+              )),
         ),
       ),
       Padding(
         padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
         child: Material(
           elevation: 5,
-          color: Color(0xff21cdc0),
+          color: list["status"] == 1 ? Color(0xff21cdc0) : Colors.grey,
           borderRadius: BorderRadius.circular(10),
           child: Container(
             alignment: Alignment.topRight,
@@ -205,11 +263,15 @@ Widget menuCard(context) {
               borderRadius: BorderRadius.circular(10),
             ),
             child: InkWell(
-              onTap: (){
-                var route = MaterialPageRoute(builder: (context) => QuestionPage()
+              onTap: list["status"] == 1
+                  ? () {
+                      var route = MaterialPageRoute(
+                          builder: (context) => QuestionPage());
+                      Navigator.push(context, route);
+                    }
+                  : () {
 
-                );
-                Navigator.push(context, route);
+                showAlert(context);
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -226,7 +288,9 @@ Widget menuCard(context) {
                       child: Text(
                         "Veterinere Sor",
                         style: TextStyle(
-                            color: Colors.white, fontFamily: "Pop", fontSize: 25),
+                            color: Colors.white,
+                            fontFamily: "Pop",
+                            fontSize: 25),
                       )),
                   Padding(
                     padding: EdgeInsets.all(10),
@@ -246,7 +310,7 @@ Widget menuCard(context) {
         padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
         child: Material(
           elevation: 5,
-          color: Color(0xff21cdc0),
+          color: list["status"] == 1 ? Color(0xff21cdc0) : Colors.grey,
           borderRadius: BorderRadius.circular(10),
           child: Container(
             alignment: Alignment.topRight,
@@ -256,9 +320,14 @@ Widget menuCard(context) {
               borderRadius: BorderRadius.circular(10),
             ),
             child: InkWell(
-              onTap: (){
-                var route = MaterialPageRoute(builder: (context)=> DatePicker());
-                Navigator.push(context, route);
+              onTap: list["status"] == 1
+                  ? () {
+                      var route =
+                          MaterialPageRoute(builder: (context) => DatePicker());
+                      Navigator.push(context, route);
+                    }
+                  : () {
+                showAlert(context);
               },
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -275,7 +344,9 @@ Widget menuCard(context) {
                       child: Text(
                         "Randevu Al",
                         style: TextStyle(
-                            color: Colors.white, fontFamily: "Pop", fontSize: 25),
+                            color: Colors.white,
+                            fontFamily: "Pop",
+                            fontSize: 25),
                       )),
                   Padding(
                     padding: EdgeInsets.all(10),
@@ -293,4 +364,16 @@ Widget menuCard(context) {
       )
     ],
   );
+}
+
+void showAlert(context) {
+  var alert = AlertDialog(
+    content: Text(
+        "Şuan Randevu Al ve Veterinere Sor kısmı aktif değildir. Aktif olması için verilen kod ile veterinere kaydolmanız gerekmektedir."),
+  title: Text("UYARI"),
+
+  );
+  showDialog(context: context, builder: (context){
+    return alert;
+  });
 }

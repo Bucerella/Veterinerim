@@ -5,9 +5,8 @@ import 'package:veterinerim/userpage/animals_add.dart';
 import 'package:veterinerim/userpage/home.dart';
 import 'package:veterinerim/veterinarypage/vet_home.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:veterinerim/yonlendirici.dart';
 void main() => runApp(MaterialApp(
-  home: Yonlendirici(),
+  home: LoginPage(),
 
   localizationsDelegates: [
     GlobalMaterialLocalizations.delegate,
