@@ -96,7 +96,7 @@ class _UserPageState extends State<UserPage> {
               Container(
                 width: size.width,
                 height: size.height / 3 * 2 - 170,
-                child: menuCard(build, widget.list),
+                child: menuCard(build, widget.list,widget.id),
               )
             ],
           ),
@@ -192,7 +192,7 @@ Widget eventReminders() {
   );
 }
 
-Widget menuCard(context, list) {
+Widget menuCard(context, list,id) {
   return ListView(
     scrollDirection: Axis.horizontal,
     children: <Widget>[
@@ -210,10 +210,12 @@ Widget menuCard(context, list) {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: InkWell(
-                onTap: () {
-                  var route =
-                      MaterialPageRoute(builder: (context) => Animals());
-                  Navigator.push(context, route);
+                onTap: () async {
+                   List animalsList = await getAnimalsList(id);
+
+                      var route =
+                      MaterialPageRoute(builder: (context) => Animals(id,animalsList));
+                      Navigator.push(context, route);
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

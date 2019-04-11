@@ -1,27 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
+import 'package:veterinerim/model/animals_model.dart';
 
 class AnimalsEdit extends StatefulWidget {
-  @override
-  _AnimalsEditState createState() => _AnimalsEditState();
+    final Map animal;
+
+    AnimalsEdit(this.animal);
+
+    @override
+    _AnimalsEditState createState() => _AnimalsEditState();
 }
 
 class _AnimalsEditState extends State<AnimalsEdit> {
 
-  TextEditingController _textEditingController = new TextEditingController();
-  TextEditingController _textEditingController2 = new TextEditingController();
-  TextEditingController _textEditingController3 = new TextEditingController();
-  TextEditingController _textEditingController4 = new TextEditingController();
-  var type = 0;
+  TextEditingController _nameEditingController = new TextEditingController();
+  TextEditingController _allergicEditingController = new TextEditingController();
+  TextEditingController _weightController = new TextEditingController();
+  TextEditingController _ageEditingController = new TextEditingController();
+  var type=0;
   var gender = 5;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _textEditingController.text = "Saturu";
-    _textEditingController2.text = "Saturuku alerjisi vardır.";
-    _textEditingController3.text = "99.9";
-    _textEditingController4.text = "5Yaşında";
+    print(widget.animal);
+    _nameEditingController.text = "${widget.animal["name"]}";
+    type = widget.animal["type"];
+    gender = widget.animal["gender"];
+    _allergicEditingController.text = "${widget.animal["allergic"]}.";
+    _weightController.text = "${widget.animal["weight"]}";
+    _ageEditingController.text = "${widget.animal["age"]}";
   }
   @override
   Widget build(BuildContext context) {
@@ -71,30 +80,30 @@ class _AnimalsEditState extends State<AnimalsEdit> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  animalsIcon("cat_icon", "Erkek", 5,gender),
-                  animalsIcon("cat_icon", "Kadın", 6,gender)
+                  animalsIcon("male_icon", "Erkek", 5,gender),
+                  animalsIcon("female_icon", "Kadın", 6,gender)
                 ],
               ),
               SizedBox(
                 height: 15,
               ),
               animalsTextWidget(
-                  size, "Hayvanınızın isimini giriniz.", "images/paw.png", _textEditingController),
+                  size, "Hayvanınızın isimini giriniz.", "images/paw.png", _nameEditingController),
               SizedBox(
                 height: 15,
               ),
               animalsTextWidget(size, "Hayvanınızın alerjilerini giriniz.",
-                  "images/pills_5.png", _textEditingController2),
+                  "images/pills_5.png", _allergicEditingController),
               SizedBox(
                 height: 15,
               ),
               animalsTextWidget(size, "Hayvanınızın kilosunu giriniz",
-                  "images/weight_2.png", _textEditingController3),
+                  "images/weight_2.png", _weightController),
               SizedBox(
                 height: 15,
               ),
               animalsTextWidget(size, "Hayvanınızın yaşını giriniz",
-                  "images/weight_2.png", _textEditingController4),
+                  "images/weight_2.png", _ageEditingController),
               SizedBox(
                 height: 25,
               ),
@@ -103,7 +112,24 @@ class _AnimalsEditState extends State<AnimalsEdit> {
                 color: Color(0xff21cdc0),
                 alignment: Alignment.center,
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    Animals editAnimal = Animals();
+                    editAnimal.id = widget.animal["id"];
+                    editAnimal.userId = widget.animal["userId"];
+                    editAnimal.gender = gender;
+                    editAnimal.type = type;
+                    editAnimal.name = _nameEditingController.text;
+                    editAnimal.allergic = _allergicEditingController.text;
+                    editAnimal.age = int.parse(_ageEditingController.text);
+                    editAnimal.weight = _weightController.text;
+
+                    String edit = await editAnimals(editAnimal);
+                    if(edit == "200"){
+                      Navigator.pop(context,{"status":"succes"});
+                    }
+                    print(edit);
+
+                  },
                   child: Text(
                     "Düzenle",
                     style: TextStyle(
@@ -132,7 +158,7 @@ class _AnimalsEditState extends State<AnimalsEdit> {
             opacity: selected == id ? 0.5 : 1,
             child: Container(
               child: Image.asset("images/$path.png"),
-              padding: EdgeInsets.all(2),
+              padding: EdgeInsets.all(8),
               width: 65,
               height: 65,
               decoration: BoxDecoration(

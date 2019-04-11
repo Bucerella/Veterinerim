@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:async/async.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:veterinerim/model/animals_model.dart';
 import 'package:veterinerim/model/user.dart';
 
 Future<String> sendRegister(User users) async{
@@ -16,6 +17,38 @@ Future<String> sendRegister(User users) async{
   });
     return response.statusCode.toString();
 }
+
+Future<String> sendAnimals(Animals animals) async{
+
+  String apiUrl = "http://192.168.1.22:8080/rest/animal/add";
+  var body = jsonEncode({"name":animals.name,"userId":animals.userId,"gender":animals.gender,"type":animals.type,"weight":animals.weight,"age":animals.age,"allergic":animals.allergic});
+  http.Response response = await http.post(Uri.encodeFull(apiUrl),body: body, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return response.statusCode.toString();
+}
+
+Future<String> editAnimals(Animals animals) async{
+
+  String apiUrl = "http://192.168.1.22:8080/rest/animal/add";
+  var body = jsonEncode({"id":animals.id,"name":animals.name,"userId":animals.userId,"gender":animals.gender,"type":animals.type,"weight":animals.weight,"age":animals.age,"allergic":animals.allergic});
+  http.Response response = await http.post(Uri.encodeFull(apiUrl),body: body, headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return response.statusCode.toString();
+}
+
+Future<List> getAnimalsList(int id) async{
+  String apiUrl = "http://192.168.1.22:8080/rest/animal/getAll?user-id=$id";
+  http.Response response = await http.get(Uri.encodeFull(apiUrl),headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return json.decode(response.body);
+}
+
 
 Future<String> sendLogin(User users) async{
   String apiUrl = "http://192.168.1.22:8080/rest/veterinary/login";
@@ -37,6 +70,27 @@ Future<Map> getUserInfo(int id) async{
   return json.decode(response.body);
 }
 
+
+Future<List> fetchCoupling(int id) async{
+  String apiUrl = "http://192.168.1.22:8080/rest/veterinary/fetch-coupling?id=$id";
+  http.Response response = await http.get(Uri.encodeFull(apiUrl),headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return json.decode(response.body);
+}
+
+
+
+
+Future<String> addUserCode(String id, String usercode) async{
+  String apiUrl = "http://192.168.1.22:8080/rest/veterinary/coupling-add?vet-id=$id&user-code=$usercode";
+  http.Response response = await http.get(Uri.encodeFull(apiUrl),headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return response.body;
+}
 
 
 String getId(){

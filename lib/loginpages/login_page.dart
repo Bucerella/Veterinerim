@@ -235,7 +235,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
 
                 onPressed: () {
-                  print("deneme");
                   var route = MaterialPageRoute(builder: (context) => SignUp());
                   Navigator.push(context, route);
                 },

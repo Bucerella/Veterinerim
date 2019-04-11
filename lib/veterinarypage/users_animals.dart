@@ -2,11 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:veterinerim/veterinarypage/useranimals_detail.dart';
 
 class UserAnimals extends StatefulWidget {
-  @override
+
+final List getAnimals;
+
+UserAnimals(this.getAnimals);
+
+@override
   _UserAnimalsState createState() => _UserAnimalsState();
 }
 
+
 class _UserAnimalsState extends State<UserAnimals> {
+  var animalList;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    animalList = widget.getAnimals;
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -22,65 +35,75 @@ class _UserAnimalsState extends State<UserAnimals> {
         backgroundColor: Color(0xff21cdc0),
       ),
       body: Container(
-        child: ListView(
-          children: <Widget>[
-            animalsCard(
-                size, "images/dog_icon.png", "Saturu", "Bahar alerjisi",context),
-            animalsCard(
-                size, "images/cat_icon.png", "Saturu", "Bahar alerjisi",context),
-            animalsCard(
-                size, "images/turtle_icon.png", "Saturu", "Bahar alerjisi",context),
-            animalsCard(
-                size, "images/hamster_icon.png", "Saturu", "Bahar alerjisi",context),
-            animalsCard(
-                size, "images/bird_icon.png", "Saturu", "Bahar alerjisi",context),
-          ],
-        ),
+        child: ListView.builder(
+            itemCount: animalList.length,
+            itemBuilder: (context, i) {
+              int iconId = animalList[i]["type"];
+              String icon = getPathFromId(iconId);
+              var title = animalList[i]["name"];
+              var subtitle = animalList[i]["allergic"];
+              return animalsCard(size, icon, title, subtitle, context,animalList[i]);
+            }),
       ),
 
     );
   }
 }
 
-Widget animalsCard(Size size, icon, title, subtitle,context) {
+Widget animalsCard(Size size, icon, title, subtitle, context,animalList) {
   return InkWell(
-    onTap: (){
-      //var route = MaterialPageRoute(builder: (context) => AnimalsEdit());
-      //Navigator.push(context, route);
+    onTap: () async {
+
+      var route = MaterialPageRoute<Map>(builder: (context) => UserAnimalDetail(animalList));
+      Navigator.push(context, route);
+
+
+
     },
-    child: InkWell(
-      onTap: (){
-        var route = MaterialPageRoute(builder: (context)=> UserAnimalDetail());
-        Navigator.push(context, route);
-      },
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            width: size.width - 30,
-            child: ListTile(
-              leading: Image.asset(
-                "$icon",
-                scale: 2,
+    child: Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          width: size.width - 30,
+          child: ListTile(
+            leading: Image.asset(
+              "$icon",
+              scale: 2,
+            ),
+            title: Text(
+              "$title",
+              style: TextStyle(
+                fontSize: 19,
+                fontFamily: "Pop",
+                fontWeight: FontWeight.bold,
               ),
-              title: Text("$title",
-                style: TextStyle(
-                  fontSize: 19,
-                  fontFamily: "Pop",
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text("$subtitle",
-                style: TextStyle(
-                  fontFamily: "Pop",
-                  fontWeight: FontWeight.w300,
-                ),
+            ),
+            subtitle: Text(
+              "$subtitle",
+              style: TextStyle(
+                fontFamily: "Pop",
+                fontWeight: FontWeight.w300,
               ),
             ),
           ),
         ),
-        elevation: 3,
       ),
+      elevation: 3,
     ),
   );
+}
+
+
+String getPathFromId(int id) {
+  if (id == 0) {
+    return "images/cat_icon.png";
+  } else if (id == 1) {
+    return "images/bird_icon.png";
+  } else if (id == 2) {
+    return "images/dog_icon.png";
+  } else if (id == 3) {
+    return "images/turtle_icon.png";
+  } else {
+    return "images/hamster_icon.png";
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
 import 'package:veterinerim/veterinarypage/vet_animals.dart';
 import 'package:veterinerim/veterinarypage/vet_appointment.dart';
 import 'package:veterinerim/veterinarypage/vet_question.dart';
@@ -45,7 +46,7 @@ class _VetHomeState extends State<VetHome> {
             Container(
               width: size.width,
               height: size.height / 3 * 2 - 170,
-              child: menuCard(build),
+              child: menuCard(build,widget.id),
             )
           ],
         ),
@@ -140,7 +141,7 @@ Widget eventReminders() {
   );
 }
 
-Widget menuCard(context) {
+Widget menuCard(context,id) {
   return ListView(
     scrollDirection: Axis.horizontal,
     children: <Widget>[
@@ -158,8 +159,10 @@ Widget menuCard(context) {
               borderRadius: BorderRadius.circular(10),
             ),
             child: InkWell(
-              onTap: (){
-                var route = MaterialPageRoute(builder: (context) => VetAnimals());
+              onTap: () async {
+                var list = await fetchCoupling(id);
+                print(list);
+                var route = MaterialPageRoute(builder: (context) => VetAnimals(list,id));
                 Navigator.push(context, route);
               },
               child: Column(

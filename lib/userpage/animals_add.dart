@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
+import 'package:veterinerim/model/animals_model.dart';
 
 class AnimalsAdd extends StatefulWidget {
+  final int id;
+
+  AnimalsAdd(this.id);
+
   @override
   _AnimalsAddState createState() => _AnimalsAddState();
 }
@@ -8,6 +14,10 @@ class AnimalsAdd extends StatefulWidget {
 class _AnimalsAddState extends State<AnimalsAdd> {
   var type = 0;
   var gender = 5;
+  TextEditingController _petNameController = TextEditingController();
+  TextEditingController _alergyController = TextEditingController();
+  TextEditingController _weightController = TextEditingController();
+  TextEditingController _ageController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,7 @@ class _AnimalsAddState extends State<AnimalsAdd> {
         child: Padding(
           padding: const EdgeInsets.only(top: 30.0),
           child: Column(
-           // crossAxisAlignment: CrossAxisAlignment.start,
+            // crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
@@ -47,41 +57,43 @@ class _AnimalsAddState extends State<AnimalsAdd> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  animalsIcon("cat_icon", "Kedi", 0,type),
-                  animalsIcon("bird_icon", "Kuş", 1,type),
-                  animalsIcon("dog_icon", "Köpek", 2,type),
-                  animalsIcon("turtle_icon", "Kaplumbağa", 3,type),
-                  animalsIcon("hamster_icon", "Hamster", 4,type),
+                  animalsIcon("cat_icon", "Kedi", 0, type),
+                  animalsIcon("bird_icon", "Kuş", 1, type),
+                  animalsIcon("dog_icon", "Köpek", 2, type),
+                  animalsIcon("turtle_icon", "Kaplumbağa", 3, type),
+                  animalsIcon("hamster_icon", "Hamster", 4, type),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
                 children: <Widget>[
-                  animalsIcon("dog_icon", "Erkek", 5,gender),
-                  animalsIcon("dog_icon", "Kadın", 6,gender),
+                  animalsIcon("male_icon", "Erkek", 5, gender),
+                  animalsIcon("female_icon", "Kadın", 6, gender),
                 ],
               ),
-              SizedBox(height: 15,),
-              animalsTextWidget(size, "Hayvanınızın isimini giriniz.", "images/paw.png", ""),
               SizedBox(
                 height: 15,
               ),
-              animalsTextWidget(
-                  size, "Hayvanınızın alerjilerini giriniz.", "images/pills_5.png", ""),
+              animalsTextWidget(size, "Hayvanınızın isimini giriniz.",
+                  "images/paw.png", _petNameController),
               SizedBox(
                 height: 15,
               ),
-              animalsTextWidget(size, "Hayvanınızın kilosunu giriniz", "images/weight_2.png", ""),
+              animalsTextWidget(size, "Hayvanınızın alerjilerini giriniz.",
+                  "images/pills_5.png", _alergyController),
               SizedBox(
                 height: 15,
               ),
-              animalsTextWidget(
-                  size, "Hayvanınızın yaşını giriniz.", "images/pills_5.png", ""),
+              animalsTextWidget(size, "Hayvanınızın kilosunu giriniz",
+                  "images/weight_2.png", _weightController),
               SizedBox(
                 height: 15,
               ),
-
+              animalsTextWidget(size, "Hayvanınızın yaşını giriniz.",
+                  "images/pills_5.png", _ageController),
+              SizedBox(
+                height: 15,
+              ),
               SizedBox(
                 height: 25,
               ),
@@ -90,8 +102,20 @@ class _AnimalsAddState extends State<AnimalsAdd> {
                 color: Color(0xff21cdc0),
                 alignment: Alignment.center,
                 child: FlatButton(
-                  onPressed: () {},
+                  onPressed: () async{
+                    Animals animal = Animals();
+                    animal.userId = widget.id;
+                    animal.allergic = _alergyController.text;
+                    animal.age = int.parse(_ageController.text);
+                    animal.weight = _weightController.text;
+                    animal.name = _petNameController.text;
+                    animal.type = type;
+                    animal.gender = gender;
+                    String sonuc = await sendAnimals(animal);
 
+                    Navigator.pop(context,{"status":"1"});
+
+                  },
                   child: Text(
                     "Kaydet",
                     style: TextStyle(
@@ -110,7 +134,7 @@ class _AnimalsAddState extends State<AnimalsAdd> {
     );
   }
 
-  Widget animalsIcon(path, type, id,selected) {
+  Widget animalsIcon(path, type, id, selected) {
     return Column(
       children: <Widget>[
         Padding(
@@ -118,11 +142,9 @@ class _AnimalsAddState extends State<AnimalsAdd> {
           child: InkWell(
             borderRadius: BorderRadius.circular(99),
             onTap: () {
-
-              if(id>4){
+              if (id > 4) {
                 gender = id;
-              }
-              else{
+              } else {
                 this.type = id;
               }
 
@@ -131,7 +153,10 @@ class _AnimalsAddState extends State<AnimalsAdd> {
             child: Opacity(
               opacity: selected == id ? 0.5 : 1,
               child: Container(
-                child: Image.asset("images/$path.png"),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.asset("images/$path.png"),
+                ),
                 padding: EdgeInsets.all(2),
                 width: 65,
                 height: 65,
@@ -170,9 +195,10 @@ class _AnimalsAddState extends State<AnimalsAdd> {
                 padding: EdgeInsets.all(15),
                 height: 75,
                 width: 75,
-                child: Image.asset("$icon",),
+                child: Image.asset(
+                  "$icon",
+                ),
               ),
-              
             ),
           ),
           Flexible(
@@ -184,6 +210,7 @@ class _AnimalsAddState extends State<AnimalsAdd> {
                 alignment: Alignment.center,
                 height: 75,
                 child: TextField(
+                  controller: editController,
                   textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     hintText: "  $icerik",
@@ -204,7 +231,7 @@ class _AnimalsAddState extends State<AnimalsAdd> {
   }
 }
 
-class DrawRectangle extends CustomPainter{
+class DrawRectangle extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // TODO: implement paint
@@ -218,8 +245,8 @@ class DrawRectangle extends CustomPainter{
     canvas.drawRect(rect, paint);
     paint.color = Color(0xFF28f8e8);
     var path = Path();
-    path.lineTo(size.width,0);
-    path.lineTo(size.width,size.height);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height);
     // close the path to form a bounded shape
     path.close();
 
@@ -231,5 +258,4 @@ class DrawRectangle extends CustomPainter{
     // TODO: implement shouldRepaint
     return false;
   }
-
 }
