@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
 import 'package:veterinerim/veterinarypage/useranimals_detail.dart';
 
 class UserAnimals extends StatefulWidget {
@@ -54,7 +55,9 @@ Widget animalsCard(Size size, icon, title, subtitle, context,animalList) {
   return InkWell(
     onTap: () async {
 
-      var route = MaterialPageRoute<Map>(builder: (context) => UserAnimalDetail(animalList));
+      List vaccineList = await allVaccine(animalList["id"]);
+      print(animalList["id"]);
+      var route = MaterialPageRoute<Map>(builder: (context) => UserAnimalDetail(animalList,vaccineList));
       Navigator.push(context, route);
 
 

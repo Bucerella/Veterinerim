@@ -1,18 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
 import 'package:veterinerim/veterinarypage/vaccine_add.dart';
 import 'package:veterinerim/veterinarypage/vaccine_edit.dart';
 
 class UserAnimalDetail extends StatefulWidget {
   final Map animalMap;
+  final List animalVaccine;
 
-
-  UserAnimalDetail(this.animalMap);
+  UserAnimalDetail(this.animalMap, this.animalVaccine);
 
   @override
   _UserAnimalDetailState createState() => _UserAnimalDetailState();
 }
 
 class _UserAnimalDetailState extends State<UserAnimalDetail> {
+  List animalAsi;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.animalMap);
+    print(widget.animalVaccine);
+    animalAsi = widget.animalVaccine;
+
+  }
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -131,6 +142,7 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                   SizedBox(
                     height: 15,
                   ),
+
                   Padding(
                     padding: const EdgeInsets.only(left: 10.0, bottom: 10.0),
                     child: Row(
@@ -195,7 +207,7 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                           ),
                           onPressed: () {
                             var route = MaterialPageRoute(
-                                builder: (context) => VaccineAdd());
+                                builder: (context) => VaccineAdd(widget.animalMap));
                             Navigator.push(context, route);
                           },
                         ),
@@ -209,70 +221,51 @@ class _UserAnimalDetailState extends State<UserAnimalDetail> {
                   SizedBox(
                     height: 10,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "01/03/2014",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: "Pop",
-                            fontWeight: FontWeight.w500,
-                          ),
+
+                  Column(
+
+                    children: animalAsi.map((asi){
+                        return Padding(
+                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(
+                              "${asi["vaccineDate"].toString().substring(0,10)}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: "Pop",
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            Text(
+                              "${asi["vaccineName"]}",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontFamily: "Pop",
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            InkWell(
+                                onTap: ()async{
+                                  var route = MaterialPageRoute<Map>(builder: (context) => VaccineEdit(asi));
+                                  Map result = await Navigator.push(context, route);
+                                  if(result.containsKey("status")){
+
+                                    animalAsi = await allVaccine(widget.animalMap["id"]);
+
+                                    setState(() {
+
+                                    });
+                                  }
+                                },
+                                child:
+                                Icon(Icons.build)),
+                          ],
                         ),
-                        Text(
-                          "2 Yaş",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: "Pop",
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        InkWell(
-                            onTap: (){
-                              var route = MaterialPageRoute(builder: (context) => VaccineEdit());
-                              Navigator.push(context, route);
-                            },
-                            child:
-                            Icon(Icons.build)),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 15,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          "01/03/2014",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: "Pop",
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        Text(
-                          "2 Yaş",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontFamily: "Pop",
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        InkWell(
-                          onTap: (){
-                            var route = MaterialPageRoute(builder: (context) => VaccineEdit());
-                            Navigator.push(context, route);
-                          },
-                            child:
-                            Icon(Icons.build)),
-                      ],
-                    ),
+                      );
+
+                    }).toList(),
                   ),
                   Container(
                       padding: EdgeInsets.only(right: 10),

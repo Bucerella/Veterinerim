@@ -6,11 +6,13 @@ import 'package:veterinerim/userpage/home.dart';
 import 'package:veterinerim/veterinarypage/vet_home.dart';
 import 'package:video_player/video_player.dart';
 import 'package:async/async.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
+
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = new TextEditingController();
   final TextEditingController _passwordController = new TextEditingController();
@@ -66,8 +68,7 @@ class _LoginPageState extends State<LoginPage> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
-
-      body: Builder(builder: (context){
+      body: Builder(builder: (context) {
         return SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -76,19 +77,19 @@ class _LoginPageState extends State<LoginPage> {
               ),
               status == true
                   ? Container(
-                width: 150,
-                height: 150,
-                child: (playerController != null
-                    ? VideoPlayer(
-                  playerController,
-                )
-                    : Container()),
-              )
+                      width: 150,
+                      height: 150,
+                      child: (playerController != null
+                          ? VideoPlayer(
+                              playerController,
+                            )
+                          : Container()),
+                    )
                   : Image.asset(
-                "images/yetiphoto.png",
-                width: 150,
-                height: 150,
-              ),
+                      "images/yetiphoto.png",
+                      width: 150,
+                      height: 150,
+                    ),
               SizedBox(
                 height: 30,
               ),
@@ -104,7 +105,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Color(0xff286f8e), width: 3),
@@ -148,8 +151,9 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 10,),
-
+              SizedBox(
+                height: 10,
+              ),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Color(0xff286f8e), width: 3),
@@ -176,7 +180,6 @@ class _LoginPageState extends State<LoginPage> {
                   textAlign: TextAlign.start,
                 ),
               ),
-
               SizedBox(
                 height: 20,
               ),
@@ -184,7 +187,8 @@ class _LoginPageState extends State<LoginPage> {
                 width: size.width - 120,
                 height: 50,
                 child: FlatButton(
-                  child: Text("Giriş Yap",
+                  child: Text(
+                    "Giriş Yap",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -197,43 +201,55 @@ class _LoginPageState extends State<LoginPage> {
                     user.posta = _usernameController.text;
                     user.sifre = _passwordController.text;
                     var text = "Giriş olunuyor";
-                    SnackBar sn = new SnackBar(content: new Row(children: <Widget>[new CircularProgressIndicator(), new Text(text),],));
+                    SnackBar sn = new SnackBar(
+                        content: new Row(
+                      children: <Widget>[
+                        new CircularProgressIndicator(),
+                        new Text(text),
+                      ],
+                    ));
                     Scaffold.of(context).showSnackBar(sn);
                     String sonuc = await sendLogin(user);
-                    if(sonuc == "-1"){
+                    if (sonuc == "-1") {
                       print("Kayıtlı Değil/Hatalı E-posta");
-
-                    }else if(sonuc == "0"){
-
+                    } else if (sonuc == "0") {
                       print("Şifreniz hatalı");
-                      SnackBar sn = new SnackBar(content: new Row(children: <Widget>[new CircularProgressIndicator(), new Text("Hatlaı şifre"),],));
+                      SnackBar sn = new SnackBar(
+                          content: new Row(
+                        children: <Widget>[
+                          new CircularProgressIndicator(),
+                          new Text("Hatlaı şifre"),
+                        ],
+                      ));
                       Scaffold.of(context).showSnackBar(sn);
-                    }else{
-                        var sonuc2 = sonuc.split("-");
-                        int id = int.parse(sonuc2[1]);
-                        if(sonuc2[0] == "1"){
-                          var list = await getUserInfo(id);
-                          var route = MaterialPageRoute(builder: (context)=>UserPage(id,list));
-                          Navigator.push(context, route);
-                        }
-                        else{
-                          var list = await getUserInfo(id);
-                         var route = MaterialPageRoute(builder: (context)=>VetHome(id,list));
-                          Navigator.push(context, route);
-                        }
+                    } else {
+                      var sonuc2 = sonuc.split("-");
+                      int id = int.parse(sonuc2[1]);
+                      saveData(id);
+                      if (sonuc2[0] == "1") {
+                        var list = await getUserInfo(id);
+                        var route = MaterialPageRoute(
+                            builder: (context) => UserPage(id, list));
+                        Navigator.push(context, route);
+                      } else {
+                        var list = await getUserInfo(id);
+                        var route = MaterialPageRoute(
+                            builder: (context) => VetHome(id, list));
+                        Navigator.push(context, route);
+                      }
                     }
                   },
                 ),
               ),
               FlatButton(
-                child: Text("Kayıt Ol",
+                child: Text(
+                  "Kayıt Ol",
                   style: TextStyle(
                     fontSize: 18,
                     color: Colors.blueAccent,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-
                 onPressed: () {
                   var route = MaterialPageRoute(builder: (context) => SignUp());
                   Navigator.push(context, route);
@@ -245,10 +261,17 @@ class _LoginPageState extends State<LoginPage> {
       }),
     );
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
     playerController.dispose();
+  }
+
+  saveData(int id) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setInt("id", id);
+    print(id);
   }
 }

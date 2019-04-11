@@ -1,25 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar/flutter_calendar.dart';
-
+import 'package:veterinerim/api/api.dart';
+import 'package:veterinerim/model/vaccine.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class VaccineEdit extends StatefulWidget {
+
+  final Map animalEdit;
+
+
+  VaccineEdit(this.animalEdit);
+
   @override
   _VaccineEditState createState() => _VaccineEditState();
 }
 
 class _VaccineEditState extends State<VaccineEdit> {
+  DateTime selectedDate ;
+  int vetId ;
   void handleNewDate(date) {
+    selectedDate = date;
     print("handleNewDate ${date}");
+
+
+
   }
 
-  TextEditingController _textEditingController = new TextEditingController();
-  TextEditingController _textEditingController2 = new TextEditingController();
+  loadData() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    vetId =  sharedPreferences.getInt("id");
+  }
+
+  TextEditingController _vaccineController = new TextEditingController();
+  TextEditingController _vaccineDetailController = new TextEditingController();
 
 @override
   void initState() {
     // TODO: implement initState
     super.initState();
-  _textEditingController.text = "KUDUZ";
-  _textEditingController2.text = "anan vurdu";
+    loadData();
+    String dateTime = widget.animalEdit["vaccineDate"];
+    int year = int.parse(dateTime.substring(0,4));
+    int month = int.parse(dateTime.substring(5,7));
+    int day = int.parse(dateTime.substring(8,11));
+    selectedDate = DateTime(year,month,day);
+    _vaccineController.text = "${widget.animalEdit["vaccineName"]}";
+    _vaccineDetailController.text = "${widget.animalEdit["vaccineDetail"]}";
 }
 
   @override
@@ -42,7 +67,7 @@ class _VaccineEditState extends State<VaccineEdit> {
         child: Column(
           children: <Widget>[
             Text(
-              "Aşı bilgilerini giriniz:",
+              "Aşı bilgilerini düzenleyiniz:",
               style: TextStyle(
                 fontSize: 25,
                 color: Color(0xff21cdc0),
@@ -51,6 +76,7 @@ class _VaccineEditState extends State<VaccineEdit> {
               ),
             ),
             Calendar(
+              initialCalendarDateOverride: selectedDate,
               onSelectedRangeChange: (range) =>
                   print("Range is ${range.item1}, ${range.item2}"),
               onDateSelected: (date) => handleNewDate(date),
@@ -79,7 +105,7 @@ class _VaccineEditState extends State<VaccineEdit> {
                       alignment: Alignment.centerLeft,
                       height: 75,
                       child: TextField(
-                        controller: _textEditingController,
+                        controller: _vaccineController,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -120,7 +146,7 @@ class _VaccineEditState extends State<VaccineEdit> {
                       alignment: Alignment.centerLeft,
                       height: 75,
                       child: TextField(
-                        controller: _textEditingController2,
+                        controller: _vaccineDetailController,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
@@ -145,9 +171,25 @@ class _VaccineEditState extends State<VaccineEdit> {
               color: Color(0xff21cdc0),
               alignment: Alignment.center,
               child: FlatButton(
-                onPressed: () {},
+                onPressed: ()async {
+
+                  Vaccine editVaccine = Vaccine();
+                  editVaccine.vaccineName = _vaccineController.text;
+                  editVaccine.vaccineDetail = _vaccineDetailController.text;
+                  editVaccine.vaccineDate = selectedDate.toString().substring(0,19);
+                  editVaccine.vetId = vetId;
+                  editVaccine.animalId = widget.animalEdit["animalId"];
+                  editVaccine.userId = widget.animalEdit["userId"];
+                  editVaccine.id = widget.animalEdit["id"];
+
+                  String vaccineEdit = await vaccineAdd(editVaccine);
+                  if(vaccineEdit == "200"){
+                    Navigator.pop(context,{"status":"true"});
+                  }
+
+                },
                 child: Text(
-                  "Kaydet",
+                  "Düzenle",
                   style: TextStyle(
                     fontSize: 22,
                     color: Colors.white,
