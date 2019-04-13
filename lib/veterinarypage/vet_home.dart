@@ -214,8 +214,9 @@ Widget menuCard(context,id) {
               borderRadius: BorderRadius.circular(10),
             ),
             child: InkWell(
-              onTap: (){
-                var route = MaterialPageRoute(builder: (context) => VetQuestion()
+              onTap: () async {
+                List getVetQuestion = await vetGetQuestion(id);
+                var route = MaterialPageRoute(builder: (context) => VetQuestion(getVetQuestion)
 
                 );
                 Navigator.push(context, route);

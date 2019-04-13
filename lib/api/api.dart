@@ -5,6 +5,7 @@ import 'package:async/async.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:veterinerim/model/animals_model.dart';
+import 'package:veterinerim/model/question.dart';
 import 'package:veterinerim/model/user.dart';
 import 'package:veterinerim/model/vaccine.dart';
 
@@ -90,6 +91,30 @@ Future<String> sendLogin(User users) async {
   return response.body;
 }
 
+Future<List> getQuestion(int id) async {
+  String apiUrl = "http://192.168.1.22:8080/rest/veterinary/get-question?id=$id";
+  http.Response response = await http.get(Uri.encodeFull(apiUrl), headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return json.decode(response.body);
+}
+
+Future<String> addQuestion(Question question) async {
+  String apiUrl = "http://192.168.1.22:8080/rest/veterinary/add-question";
+  var body = jsonEncode({"userId": question.userId, "question": question.question});
+  http.Response response = await http.post(Uri.encodeFull(apiUrl),
+      body: body,
+      headers: {
+        "Accept": "application/json",
+        "content-type": "application/json"
+      });
+
+  return response.body;
+}
+
+
+
 Future<Map> getUserInfo(int id) async {
   String apiUrl = "http://192.168.1.22:8080/rest/veterinary/get-info?test=$id";
   http.Response response = await http.get(Uri.encodeFull(apiUrl), headers: {
@@ -109,6 +134,19 @@ Future<List> fetchCoupling(int id) async {
   return json.decode(response.body);
 }
 
+
+Future<List> vetGetQuestion(int id) async {
+  String apiUrl =
+      "http://192.168.1.22:8080/rest/veterinary/get-vet-question?vet-id=$id";
+  http.Response response = await http.get(Uri.encodeFull(apiUrl), headers: {
+    "Accept": "application/json",
+    "content-type": "application/json"
+  });
+  return json.decode(response.body);
+}
+
+
+
 Future<String> addUserCode(String id, String usercode) async {
   String apiUrl =
       "http://192.168.1.22:8080/rest/veterinary/coupling-add?vet-id=$id&user-code=$usercode";
@@ -119,6 +157,9 @@ Future<String> addUserCode(String id, String usercode) async {
   return response.body;
 }
 
+
+
+
 Future<List> allVaccine(int id) async {
   String apiUrl = "http://192.168.1.22:8080/rest/veterinary/all-vaccine?id=$id";
   http.Response response = await http.get(Uri.encodeFull(apiUrl), headers: {
@@ -127,6 +168,8 @@ Future<List> allVaccine(int id) async {
   });
   return json.decode(response.body);
 }
+
+
 
 Future<String> vaccineAdd(Vaccine vaccine) async {
   String apiUrl = "http://192.168.1.22:8080/rest/veterinary/vaccine-add";
@@ -160,6 +203,8 @@ Future<String> vaccineAdd(Vaccine vaccine) async {
       });
   return response.statusCode.toString();
 }
+
+
 
 String getId() {
   var rnd = new Random();

@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 
 class VetQuestion extends StatefulWidget {
-  @override
+
+ final List getQuestion;
+
+ VetQuestion(this.getQuestion);
+
+ @override
   _VetQuestionState createState() => _VetQuestionState();
 }
 
+
 class _VetQuestionState extends State<VetQuestion> {
+
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -22,16 +29,11 @@ class _VetQuestionState extends State<VetQuestion> {
         ),
         backgroundColor: Color(0xff21cdc0),
       ),
-      body: ListView(
-        children: <Widget>[
-          questionCard(
-              size,
-              "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı ",
-              "Cevap gir",
-              context),
-          questionCardStateFull(size,"Deneme","Cevap gir"),
-        ],
-      ),
+      body: ListView.builder(itemCount: widget.getQuestion.length,itemBuilder: (context,i){
+        return questionCardStateFull(size, "${widget.getQuestion[i]["question"]}", "${widget.getQuestion[i]["answer"]}");
+
+      }),
+
     );
   }
 }
@@ -104,18 +106,22 @@ class _questionCardStateFullState extends State<questionCardStateFull> {
                 ),
                 child: InkWell(
                   onTap: () async{
-                    Map result = await showDialog(context: context,builder: (BuildContext context){
+                    String result = await showDialog(context: context,builder: (BuildContext context){
                       return AddAnswer(answerCurrent: answerState,);
                     });
 
-                    if(result.containsKey('answer'))
-                    answerState = result['answer'];
+
+                    if(result != null){
+                      answerState = result;
 
 
-                    setState(() {
+                      setState(() {
 
-                    });
-                    print(result);
+                      });
+                    }
+                    else{
+                      print("null");
+                    }
 
                   },
                   child: Container(
@@ -282,7 +288,8 @@ class AddAnswer extends StatelessWidget {
           },
           child: InkWell(
             onTap: (){
-              Navigator.pop(context,{'answer':'${answerText.text}'});
+              String text = answerText.text;
+              Navigator.pop(context,text);
 
             },
             child: Text("Ekle"),

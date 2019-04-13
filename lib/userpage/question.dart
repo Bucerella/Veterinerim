@@ -1,13 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:veterinerim/api/api.dart';
+import 'package:veterinerim/model/question.dart';
 
 class QuestionPage extends StatefulWidget {
-  @override
+
+ final List askQuestion;
+ final int id;
+
+
+ QuestionPage(this.askQuestion, this.id);
+
+ @override
   _QuestionPageState createState() => _QuestionPageState();
 }
 
+
 class _QuestionPageState extends State<QuestionPage> {
+
+  List askQuestion;
+
+
+  TextEditingController questionController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    askQuestion = widget.askQuestion;
+  }
+
   @override
   Widget build(BuildContext context) {
+
     var size = MediaQuery
         .of(context)
         .size;
@@ -24,49 +48,90 @@ class _QuestionPageState extends State<QuestionPage> {
           ),
           backgroundColor: Color(0xff21cdc0),
         ),
-        body: ListView(
-          children: <Widget>[
-            questionCard(
-                size,
-                "Lorem Ipsum, dizgi ve baskı endüstrisinde kullanılan mıgır metinlerdir. Lorem Ipsum, adı ",
-                "bilinmeyen bir matbaacının bir hurufat numune kitabı oluşturmak üzere bir yazı galerisini alarak karıştırdığı 1500'lerden beri endüstri standardı sahte metinler olarak kullanılmıştır."),
+        body: ListView.builder(itemCount: askQuestion.length,itemBuilder: (context,i){
 
-          ],
-        ),
+         return questionCard(
+              size,
+              askQuestion[i]["question"],askQuestion[i]["answer"]);
+
+
+
+        }),
         floatingActionButton: FloatingActionButton(
             backgroundColor: Color(0xff21cdc0),
             child: Icon(Icons.add,),
-            
-            onPressed: (){ showAlert(context, "Selam");})
+
+            onPressed: () async{
+
+              Question result = await showDialog(context: context, builder: (context) => AddQuestion(widget.id));
+              if(result!=null){
+                Map newQuestion = Map();
+                newQuestion["question"] =result.question;
+                askQuestion.add(newQuestion);
+                setState(() {
+                });
+              }
+
+
+            })
     );
   }
 
-  void showAlert(BuildContext context,questionAdd){
-    var alert = new AlertDialog(
-      title: Text("Sorunuzu Giriniz"),
-      content: TextField(
-        maxLines: 3,
-        decoration: InputDecoration(
-          hintText: "Sorunuz.."
-        ),
-      ),
-      actions: <Widget>[
-        FlatButton(
-          onPressed: (){
-            Navigator.pop(context);
-          },
-          child: Text("Ekle"),
-        ),
-      ],
-    );
-    showDialog(context: context, builder: (context) => alert);
-  }
+
 
 
 
 }
+class AddQuestion extends StatelessWidget {
 
-Widget questionCard(Size size, question, answer) {
+  TextEditingController questionController = TextEditingController();
+  final int id;
+
+
+  AddQuestion(this.id);
+
+  @override
+  Widget build(BuildContext context) {
+
+    return AlertDialog(
+      title: Text("Sorunuzu Giriniz"),
+      content: TextField(
+        controller: questionController,
+        maxLines: 3,
+        decoration: InputDecoration(
+            hintText: "Sorunuz.."
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () async{
+            Question postQues = Question();
+            postQues.userId = id;
+            postQues.question = questionController.text;
+
+            await addQuestion(postQues);
+
+            Question question = Question();
+            question.question = questionController.text;
+
+             Navigator.pop(context,question);
+             },
+          color: Colors.red,
+          child: Text("Ekle"),
+        ),
+      ],
+    );
+  }
+}
+
+Widget questionCard(Size size, question, String answer) {
+
+  var finalAnswer = "Sorunuz henüz cevaplanmadı";
+  if(answer !=null){
+    if(answer.isNotEmpty){
+      finalAnswer = answer;
+    }
+  }
   return Padding(
     padding: const EdgeInsets.all(8.0),
     child: Stack(
@@ -119,8 +184,8 @@ Widget questionCard(Size size, question, answer) {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: Text(
-                    "$answer",
+                  child:   Text(
+                    "$finalAnswer",
                     style: TextStyle(
                         fontFamily: "Pop", fontSize: 16, color: Colors.black),
                   ),

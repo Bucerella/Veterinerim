@@ -19,6 +19,7 @@ class _UserPageState extends State<UserPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(widget.list);
   }
 
   @override
@@ -40,7 +41,7 @@ class _UserPageState extends State<UserPage> {
               Container(
                 width: size.width,
                 height: 100,
-                child: userPanel(widget.list),
+                child: userPanel(widget.list,widget.id),
               ),
               SizedBox(
                 height: 20,
@@ -106,7 +107,7 @@ class _UserPageState extends State<UserPage> {
   }
 }
 
-Widget userPanel(list) {
+Widget userPanel(list,id) {
   return Row(
     children: <Widget>[
       SizedBox(
@@ -266,9 +267,12 @@ Widget menuCard(context, list,id) {
             ),
             child: InkWell(
               onTap: list["status"] == 1
-                  ? () {
+                  ? () async {
+                      List getQues = await getQuestion(id);
+
+
                       var route = MaterialPageRoute(
-                          builder: (context) => QuestionPage());
+                          builder: (context) => QuestionPage(getQues,id));
                       Navigator.push(context, route);
                     }
                   : () {
